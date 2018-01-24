@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hey, Bender</title>
+</head>
+<body id="body">
+<p>
+    <h2>Angle</h2>
+    <input id="angle" type="range" min="0" max="1.57" step="0.01" value="0">
+</p>
+<script type='text/javascript'>
+    var CANVAS_WIDTH = 800;
+    var CANVAS_HEIGHT = 600;
+    var FPS = 25;
+    var segmentLength = 2;
+    var nSegments = 1000;
+    var segments = [];
+    var initializing = true;
+
+    var cx = 800;
+    var cy = 600;
+    var cr = 100;
+
+    init(0);
+    document.getElementById('angle').addEventListener('change', function(e) {
+        init(this.value);
+    }, false);
+    function init(angle) {
+        initializing = true;
+        segments = [];
+        for (var i=0;i<nSegments;i++) {
+            if (i === 0) {
+                segments.push({
+                    x: cx - Math.sin(angle) * cr,
+                    y: cy - Math.cos(angle) * cr,
+                    a: angle
+                })
+            }
+            else {
+                segments.push({
+                    x: segments[i - 1].x - Math.cos(angle) * segmentLength,
+                    y: segments[i - 1].y - Math.sin(angle) * segmentLength,
+                    a: angle
+                });
+            }
+        }
+        initializing = false;
+    }
+
+    var canvasElement = document.createElement("canvas");
+    canvasElement.width = CANVAS_WIDTH;
+    canvasElement.height = CANVAS_HEIGHT;
+    var canvas = canvasElement.getContext("2d");
+    document.getElementById("body").appendChild(canvasElement);
+
+    setInterval(function () {
+        if (initializing) return;
+        update();
+        draw();
+    }, 1000 / FPS);
+
+    function update() {
+    }
+
+    function draw() {
+        var width = CANVAS_WIDTH;
+        var height = CANVAS_HEIGHT;
+
+        canvas.globalCompositeOperation = "source-over";
+        canvas.clearRect(0, 0, width, height);
+        canvasElement.strokeStyle="#FF0000";
+        canvas.beginPath();
+        canvas.arc(cx, cy, cr, 0, Math.PI * 2);
+        canvas.stroke();
+        canvas.beginPath();
+        for (var i=0;i<nSegments;i++) {
+            var x = segments[i].x;
+            var y = segments[i].y;
+            var dx = Math.cos(segments[i].a) * segmentLength;
+            var dy = Math.sin(segments[i].a) * segmentLength;
+            var x0 = x + dx,
+                x1 = x - dx,
+                y0 = y + dy,
+                y1 = y - dy;
+            if (i === 0)
+                canvas.moveTo(x0, y0);
+            canvas.lineTo(x0, y0);
+            canvas.lineTo(x1, y1);
+        }
+        canvas.stroke();
+    }
+
+    function newPosition(x, y, a, d) {
+        return {
+            x: x + Math.sin(a) * d,
+            y: y + Math.cos(a) * d
+        }
+    };
+
+    function rgbToHex(R,G,B) {return toHex(R)+toHex(G)+toHex(B)}
+    function toHex(n) {
+        n = parseInt(n,10);
+        if (isNaN(n)) return "00";
+        n = Math.max(0,Math.min(n,255));
+        return "0123456789ABCDEF".charAt((n-n%16)/16)
+            + "0123456789ABCDEF".charAt(n%16);
+    }
+
+
+    //]]>
+</script>
+</body>
+</html>
