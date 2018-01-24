@@ -22,6 +22,10 @@
     var cy = 600;
     var cr = 100;
 
+    var wx = 400;
+    var wy = 300;
+    var wr = 150;
+
     init(0);
     document.getElementById('angle').addEventListener('change', function(e) {
         init(this.value);
@@ -29,6 +33,7 @@
     function init(angle) {
         initializing = true;
         segments = [];
+        wy = 350 + Math.sin(angle) * (400 - Math.sin(angle) * cr);
         for (var i=0;i<nSegments;i++) {
             if (i === 0) {
                 segments.push({
@@ -72,6 +77,11 @@
         canvasElement.strokeStyle="#FF0000";
         canvas.beginPath();
         canvas.arc(cx, cy, cr, 0, Math.PI * 2);
+        canvas.stroke();
+        canvas.beginPath();
+        canvas.arc(wx, wy, wr, 0, Math.PI * 2);
+        canvas.stroke();
+        canvas.beginPath();
         canvas.arc(0, cy, cr, 0, Math.PI * 2);
         canvas.stroke();
         canvas.beginPath();
