@@ -32,15 +32,15 @@
         for (var i=0;i<nSegments;i++) {
             if (i === 0) {
                 segments.push({
-                    x: cx - Math.sin(angle) * cr,
+                    x: 0 + Math.sin(angle) * cr,
                     y: cy - Math.cos(angle) * cr,
                     a: angle
                 })
             }
             else {
                 segments.push({
-                    x: segments[i - 1].x - Math.cos(angle) * segmentLength,
-                    y: segments[i - 1].y - Math.sin(angle) * segmentLength,
+                    x: segments[i - 1].x + Math.cos(angle) * segmentLength,
+                    y: segments[i - 1].y + Math.sin(angle) * segmentLength,
                     a: angle
                 });
             }
@@ -72,6 +72,7 @@
         canvasElement.strokeStyle="#FF0000";
         canvas.beginPath();
         canvas.arc(cx, cy, cr, 0, Math.PI * 2);
+        canvas.arc(0, cy, cr, 0, Math.PI * 2);
         canvas.stroke();
         canvas.beginPath();
         for (var i=0;i<nSegments;i++) {
